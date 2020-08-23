@@ -10,4 +10,9 @@ if __name__ == '__main__':
     connection = sl3.connect(db_path)
 
     connection.close()
+    cities = []
+    for i in range(50):
+        city = City(60)
+        cities.append(city)
+    cities_writer(cities)
 

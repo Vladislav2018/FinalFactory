@@ -15,10 +15,6 @@ class Vacantion(object):
         self.period = period
         self.data = vacations['vacantion']
 
-    def calc_require_staff(self, vacantion_info: Any) -> List[int, ...]:
-      pass
-
-
     def calc_count_of_submissive_employee(self, min_hiearhy_level: float) -> int:
         #test variant, it must depends from other data
         return round(randrange(0, min_hiearhy_level)**randint(1,10))

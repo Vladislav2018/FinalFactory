@@ -1,11 +1,16 @@
 from random import *
 from typing import *
+import pandas as pd
+import os
+import numpy as np
+from Building import *
+CITY_PATH = 'data/cities/'
+OBJECT = 'City_'
+FORMAT = '.csv'
 
-class Store(object):
+class Store(Building):
+    pass
 
-    def __init__(self, dist_to_the_nearest_factory: int, city_id: int):
-        self.dist_to_the_nearest_factory = dist_to_the_nearest_factory
-        self.city_id = city_id
 
     def calc_visitors_per_day(self, *args):
         pass

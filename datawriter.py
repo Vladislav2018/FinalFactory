@@ -5,6 +5,7 @@ import csv
 DAYS_IN_MONTH: Tuple[int, ...] = (31, 28, 31, 30, 31, 30, 31, 31, 30, 30, 31, 30, 31)
 func_prefixes: Tuple[str, ...] = ('calc_', 'gen', 'write')
 CSV_FORMAT: Final[str] = '.csv'
+TXT_FORMAT :Final[str] = '.txt'
 
 def genFilename_from_method(func_name: str, curr_month: int) -> str:
     """
@@ -21,8 +22,8 @@ def genFilename_from_method(func_name: str, curr_month: int) -> str:
             filename = func_name[len(prefix):]
     return filename + str(curr_month)+ CSV_FORMAT
 
-def genFilename_from_class(obj: object):
-    return obj.__class__.__name__ + '_' + str(id(obj)) + CSV_FORMAT
+def genFilename_from_class(obj: object, format = CSV_FORMAT):
+    return obj.__class__.__name__ + '_' + str(id(obj)) + format
 
 
 def call_counter(func):
@@ -72,35 +73,46 @@ def get_value_from_obj(key_name : str, obj: object, *args, method_prefix: str = 
     else:
         raise Exception('Attribute is undefined')
 
-def cities_writer(cities):
+def cities_writer(cities, path = 'data/cities/before/'):
+    city_number: int = 0
     for city in cities:
-        filename: str = genFilename_from_class(city)
+        filename = 'City_' + str(city_number) + CSV_FORMAT
         period: int = city.__getattribute__('period')
         dist: int = city.__getattribute__('dist_to_the_nearest_factory')
-        with open('data/'+filename, 'a', newline='') as csvfile:
-                fieldnames = [
-                    'month_ago', 'dist_to_the_nearest_factory',
-                    'population', 'gdp_per_capita', 'competition'
-                              ]
-                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        start_population = None
+        start_gdp = None
+        start_competition = None
+        start_places = None
+        product = None
+        col_names = ['population', 'gdp_per_capita', 'competition', 'possible_places']
+        col_vals = []
+        while period > 0:
+            population = get_value_from_obj('population', city,
+                                            start_population)
+            start_population = population
+            gdp_per_capita = get_value_from_obj('gdp_per_capita', city,
+                                                population, start_gdp)
+            start_gdp = gdp_per_capita
+            competition = get_value_from_obj('competition', city,
+                                             population, gdp_per_capita, start_competition, product)
+            start_competition = competition
+            places = get_value_from_obj('possible_places', city,
+                                             population, gdp_per_capita, start_places, competition,)
+            if (product is None) or (type(product) is not tuple):
+                col_vals.append([population, gdp_per_capita, competition, places])
+            elif type(product) is tuple:
+                for prod in product:
+                    col_names.append(prod)
+                    col_vals.append([competition])
+            period -= 1
+            city.__setattr__('period', period)
+        city_df = pd.DataFrame(col_vals)
+        city_df.to_csv(path + filename, header= col_names)
+        city_number += 1
+        const_prefs = {'dist_to_the_nearest_factory: ': str(dist)}
 
-                writer.writeheader()
-                start_population = None
-                start_gdp = None
-                start_competition = None
-                while period > 0:
-                    population = get_value_from_obj('population', city, start_population)
-                    start_population = population
-                    gdp_per_capita = get_value_from_obj('gdp_per_capita', city, population, start_gdp)
-                    start_gdp = gdp_per_capita
-                    competition = get_value_from_obj('competition', city, population, gdp_per_capita, start_competition)
-                    start_competition = competition
+        with open(path + 'const_info' + filename, 'a',) as const_info:
+            const_info.write(str(const_prefs))
 
-                    row = {'month_ago': period, 'dist_to_the_nearest_factory': dist,
-                           'population':population, 'gdp_per_capita': gdp_per_capita,
-                           'competition': competition}
-                    writer.writerow(row)
-                    period -= 1
-                    city.__setattr__('period', period)
 
 
