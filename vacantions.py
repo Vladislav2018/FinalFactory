@@ -17,27 +17,27 @@ class Vacantion(object):
 
     def calc_count_of_submissive_employee(self, min_hiearhy_level: float) -> int:
         #test variant, it must depends from other data
-        return round(randrange(0, min_hiearhy_level)**randint(1,10))
+        return randrange(0, round(min_hiearhy_level))**randint(1,10)
     
     def calc_bonus_expected_value(self, min_hiearhy_level: float, vacantion: str) -> int:
         #ToDo: make harder dependency
         if vacantion == "sales_manager":
-            return randint(0, 100)/randint(22, 22+ randint(1,9))
+            return round(randint(0, 100)/randint(22, 22+ randint(1,9)))
         else:
-            return randint(0, min_hiearhy_level**randint(1,10))/randint(22, 22 + randint(1, 9))
+            return round(randint(0, round(min_hiearhy_level)**randint(1,10))/randint(22, 22 + randint(1, 9)))
 
     def calc_fine_expected_value(self, min_hiearhy_level: float, vacantion: str) -> int:
         if vacantion == "sales_manager":
-            return randint(0, 100)/randint(22, 22+ randint(1,9))
+            return round(randint(0, 100)/randint(22, 22+ randint(1,9)))
         else:
-            return randint(0, min_hiearhy_level)/randint(22, 22 + randint(1, 9))
+            return round(randint(0, round(min_hiearhy_level))/randint(22, 22 + randint(1, 9)))
 
     def calc_current_salary_per_day(self, standart_salary_per_day: int,
                                      count_of_submissive_employee: int, bonus_expected_value: int,
                                      fine_expected_value: int, min_hiearhy_level: float)-> float:
         return (standart_salary_per_day + pow(count_of_submissive_employee,1/2)*0.001 +
-                randint(1,10)*0.1 + bonus_expected_value/randint(22,22+min_hiearhy_level) -
-                fine_expected_value/randint(22,22+min_hiearhy_level))
+                randint(1,10)*0.1 + bonus_expected_value/randint(22, round(22+min_hiearhy_level)) -
+                fine_expected_value/randint(22,round(22+min_hiearhy_level)))
 
     def calc_staff_turnover_per_month(self, min_hiearhy_level: float, current_salary_per_day: int) -> int:
         return round(1/(min_hiearhy_level+1)**2 + 1/current_salary_per_day + randint(1,10)*0.1)

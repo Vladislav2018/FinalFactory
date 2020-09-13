@@ -5,4 +5,10 @@ from Building import *
 CITY_PATH = 'data/cities/'
 
 class Manufacture(Building):
-    pass
+
+    def __init__(self, area: int, high: int, ):
+        Building.__init__(self, area=area, high=high)
+
+    
+
+
