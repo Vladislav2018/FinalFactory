@@ -3,13 +3,17 @@ from vacantions import *
 from typing import *
 from city import *
 import sqlite3 as sl3
+from db.dbmanager import DataBase
+from product import Product
 
 from manufacturing import *
 
 if __name__ == '__main__':
 
+
    db_path = 'db/data.db'
-   connection = sl3.connect(db_path)
+   logs_path = 'db/logs.db'
+
    create_products_table = """
 CREATE TABLE IF NOT EXISTS products (
                                     id integer PRIMARY KEY UNIQUE NOT NULL,
@@ -186,8 +190,45 @@ CREATE TABLE IF NOT EXISTS products_staff (
   									FOREIGN KEY (factory_id) REFERENCES factories(id)
 );
    """
-   connection.executescript(create_factories_products)
-   connection.close()
+   create_staff_factories = """
+      CREATE TABLE IF NOT EXISTS staff_factories (
+                                    id integer PRIMARY KEY UNIQUE NOT NULL,
+  									employee_id INTEGER NOT NULL,
+                                    factory_id INTEGER NOT NULL,
+                                    action_type TEXT NOT NULL CHECK (action_type IN ("work", "manage", "check")),
+  									FOREIGN KEY (employee_id) REFERENCES staff(id),
+  									FOREIGN KEY (factory_id) REFERENCES factories(id)
+);
+   """
+   create_staff_stores = """
+         CREATE TABLE IF NOT EXISTS staff_stores (
+                                        id integer PRIMARY KEY UNIQUE NOT NULL,
+     									employee_id INTEGER NOT NULL,
+                                        store_id INTEGER NOT NULL,
+                                        action_type TEXT NOT NULL CHECK (action_type IN ("work", "manage", "check")),
+     									FOREIGN KEY (employee_id) REFERENCES staff(id),
+     									FOREIGN KEY (store_id) REFERENCES stores(id)
+   );
+      """
+   modify_staff_table = """
+   ALTER TABLE staff
+   ADD COLUMN ownership REAL DEFAULT 0
+   """
+   logger_table = """
+      CREATE TABLE IF NOT EXISTS logs (
+                                       id integer PRIMARY KEY UNIQUE NOT NULL,
+                                       table_name TEXT NOT NULL,
+     									way_action TEXT NOT NULL check (way_action in ('insertion', 'deleting', 'changing')),
+     									last_val TEXT,
+     									new_val TEXT
+     									);
+      """
+
+   print()
+
+   logger = DataBase(logs_path)
+   pr1 = Product()
+   #logger.db_connection.executescript()
 
 '''
  cities = []

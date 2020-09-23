@@ -1,4 +1,7 @@
+import uuid
+import pandas as pd
 
-class Candidates(object):
-    def __init__(self):
-        pass
+class Candidate():
+    def __init__(self, **kwards):
+        self.uuid = uuid.uuid1()
+        params = kwards.keys()
