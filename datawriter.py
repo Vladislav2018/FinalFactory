@@ -2,12 +2,59 @@ import pandas as pd
 from typing import *
 import os
 import warnings
+import numpy as np
 
 DAYS_IN_MONTH: Tuple[int, ...] = (31, 28, 31, 30, 31, 30, 31, 31, 30, 30, 31, 30, 31)
 func_prefixes: Tuple[str, ...] = ('calc_', 'gen', 'write')
 CSV_FORMAT: Final[str] = '.csv'
 TXT_FORMAT: Final[str] = '.txt'
 
+def dict_from_csv(path:str, param1:str, param2:str):
+    table = pd.read_csv(path)
+    keys = list(table[param1].array)
+    values = list(table[param2].array)
+    out = dict(zip(keys,values))
+    return out
+
+def dicts_to_scv(path: str, dicts):
+    pass
+
+def dict_from_class_methods(object: object, is_callable: bool, *args, **kwargs):
+    data_dict = {}
+    if is_callable == True:
+        all_attrs = dir(object)
+        all_methods = [func for func in all_attrs
+                       if callable(getattr(object, func))]
+        method_list = [func for func in all_methods
+                       if func.startswith("calc")]
+
+        for method in method_list:
+            retunings = getattr(object, method)(*args, **kwargs)
+            d = {method: retunings}
+            data_dict.update(d)
+    else:
+        attrs_list = [func for func in dir(object)
+                        if not callable(getattr(object, func))
+                        and not func.startswith("__")]
+
+        for attr in attrs_list:
+            retunings = getattr(object, attr)
+            d = {attr: retunings}
+            data_dict.update(d)
+        return data_dict
+
+def get_csv_essence(path: str, essence_name: str, essence_id: str , format: str = '.csv'):
+    try:
+        data = pd.read_csv(path + essence_name + '_' + essence_id + format)
+        return data
+    except FileNotFoundError:
+        all_essences = os.listdir(path)
+        if (data in all_essences):
+            essence = np.random.choice(all_essences)
+            essence_data = pd.read_csv(path + essence)
+            return essence_data
+        else:
+            raise ('The folder has not essences')
 
 def genFilename_from_method(func_name: str, curr_month: int) -> str:
     """
@@ -74,6 +121,7 @@ def get_value_from_obj(key_name : str, obj: object, *args, method_prefix: str = 
         return getattr(obj, method_prefix + key_name)(*args)
     else:
         raise Exception('Attribute is undefined')
+
 
 def cities_writer(cities, path = 'data/cities/before/'):
     city_number: int = 0

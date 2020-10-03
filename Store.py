@@ -11,7 +11,6 @@ FORMAT = '.csv'
 class Store(Building):
     pass
 
-
     def calc_visitors_per_day(self, *args):
         pass
 

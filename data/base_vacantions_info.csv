@@ -1,12 +1,12 @@
-vacantion,min_hierarhy_level,standart_salary_per_day,avg_work_day,min_count_of_work_days
-CEO,4, 2000, 12, 28
-mid_manager,2,300, 10, 25
-manager,1, 260, 9, 23
-security,0.5, 180, 12, 15
-driver,0, 171, 10, 22
-worker,0, 104, 8, 23
-office_worker,0, 148, 8, 23
-junior_specialist, 0,  174, 10, 28
-middle_specialist, 0, 274, 8, 24
-senior_specialist, 0.5, 410, 8, 24
-sales_manager,0, 300, 8, 24
+vacantion,min_hierarhy_level,standart_salary_per_day,avg_work_day,min_count_of_work_days,male_sex_prob_coef,median_age,min_req_exp
+CEO,4, 2000, 12, 28, 55, 50, 120
+mid_manager,2,300, 10, 25, 50, 30, 60
+manager,1, 260, 9, 23, 50, 25, 24
+security,0.5, 180, 12, 15, 90, 40, 0
+driver,0, 171, 10, 22, 85, 30, 36
+worker,0, 104, 8, 23, 77, 35, 12
+office_worker,0, 148, 8, 23, 50, 25, 0
+junior_specialist, 0,  174, 10, 28, 56, 20, 0
+middle_specialist, 0, 274, 8, 24, 70, 24, 36
+senior_specialist, 0.5, 410, 8, 24, 80, 30, 72
+sales_manager,0, 300, 8, 24, 40, 23, 0

@@ -17,6 +17,9 @@ class City(object):
         self.SCALE = 10**4
         self.POP_DISTR_BASE = 0.6
         self.GDB_DIVIDE_KOEF = 100
+        self.avg_gdp_in_country = 10**4
+        self.avg_citizens = 5*10**4
+        self.population_infuence_coeff = 4
 
     def calc_population(self, first_val: Union[None, int] = None, min_pop: int = 1,
                         max_pop: int = 2*10**3, scale: int = 10**4) -> int:
@@ -33,56 +36,50 @@ class City(object):
         self.population = population
         return population
 
-    def calc_gdp_per_capita(self,  population: int, first_val: Union[None, int] = None, avg_gdp_per_capita_in_country: int = 10**4,
-                            avg_citizens: int= 5*10**4, population_infuence_coeff: int = 4) -> int:
-        if first_val is None:
-            coeff: float = math.pow(population/avg_citizens, 1/population_infuence_coeff)
-            gdp: int = math.floor(np.random.normal(avg_gdp_per_capita_in_country,
-                                              avg_gdp_per_capita_in_country/population_infuence_coeff)*coeff)
+    def calc_gdp_per_capita(self) -> int:
+        if self.gdp is None:
+            coeff: float = math.pow(self.population/self.avg_citizens, 1/self.population_infuence_coeff)
+            gdp: int = math.floor(np.random.normal(self.avg_gdp_in_country,
+                                              self.avg_gdp_in_country/ self.population_infuence_coeff)*coeff)
         else:
-            gdp = round(np.random.normal(first_val, first_val/self.GDB_DIVIDE_KOEF))
+            gdp = round(np.random.normal(self.gdp, self.gdp/self.GDB_DIVIDE_KOEF))
             gdp = abs(gdp)
         self.gdp = gdp
         return gdp
 
-    def calc_competition(self, population: int, gdp_per_capita: int,
-                         first_val: Union[None, int] = None,
+    def calc_competition(self,
                          product_id: Union[None, int] = None) -> int:
         if product_id is None:
             from warnings import warn
             warn('The product is None, method will return 0')
             return 0
 
-        pop_len = len(str(population))
-        realistic_koef = (population)*2*(10**(-7))
-        if first_val is None:
-            count: int = round(math.log(population*gdp_per_capita**pop_len)*realistic_koef)
+        pop_len = len(str(self.population))
+        realistic_koef = (self.population)*2*(10**(-7))
+        if self.count is None:
+            count: int = round(math.log(self.population*self.gdp**pop_len)*realistic_koef)
         else:
-            if first_val > 0:
-                difference_part: float = first_val/2
-                differences = np.arange(-round(first_val/difference_part)+1, round(first_val/difference_part)+1)
-                probabilities_raw: List[float, ...] = [float(first_val)/(i**2 + 0.1) for i in differences]
+            if self.count > 0:
+                difference_part: float = self.count/2
+                differences = np.arange(-round(self.count/difference_part)+1, round(self.count/difference_part)+1)
+                probabilities_raw: List[float, ...] = [float(self.count)/(i**2 + 0.1) for i in differences]
                 probabilities = [float(i)/sum(probabilities_raw) for i in probabilities_raw]
                 bound: int = np.random.choice(differences, p= probabilities)
-                count: int = first_val + bound
+                count: int = self.count + bound
                 count = abs(count)
             else:
                 count = np.random.choice([0,1], p= [0.99, 0.01])
         self.count = count
         return count
 
-    def calc_possible_places(self,
-                             population: int, gdp_per_capita: int,
-                             competition: Union[int, None],
-                             first_val: Union[int, None] = None):
+    def calc_possible_places(self):
+        additional: int = round(math.pow(self.population * self.gdp,1/1.7)/self.SCALE)
 
-        additional: int = round(math.pow(population * gdp_per_capita,1/1.7)/self.SCALE)
-
-        if competition is None:
-            competition = 0
-        first_val: int = competition + additional
+        if self.count is None:
+            self.count = 0
+        first_val: int = self.count + additional
         additional = round(math.sqrt(additional/20))
-        if gdp_per_capita < 10**4:
+        if self.gdp < 10**4:
             differences = np.arange(- additional, additional)
         else:
             differences = np.arange(- additional + 1, additional + 1)
@@ -101,7 +98,6 @@ class City(object):
             count = 0
         self.all_places = count
         return count
-
 
 
 
