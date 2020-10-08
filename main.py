@@ -2,7 +2,7 @@ from datawriter import *
 from vacantions import *
 from typing import *
 from city import *
-from product import Product
+from product import *
 import pandas as pd
 import candidates
 import datawriter as dw
@@ -10,7 +10,7 @@ from usersfunc import *
 path_candidates = "data/candidates/candidates.csv"
 
 if __name__ == '__main__':
-    gen_factory_risks()
+    gen_products()
     """
     candidates_to_write = []
     for i in range(50):
