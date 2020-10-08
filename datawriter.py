@@ -8,6 +8,7 @@ DAYS_IN_MONTH: Tuple[int, ...] = (31, 28, 31, 30, 31, 30, 31, 31, 30, 30, 31, 30
 func_prefixes: Tuple[str, ...] = ('calc_', 'gen', 'write')
 CSV_FORMAT: Final[str] = '.csv'
 TXT_FORMAT: Final[str] = '.txt'
+etypes_path = "data/equipment/etypes.csv"
 
 def dict_from_csv(path:str, param1:str, param2:str):
     table = pd.read_csv(path)
@@ -164,5 +165,15 @@ def cities_writer(cities, path = 'data/cities/before/'):
         with open(path + 'const_info' + filename, 'a',) as const_info:
             const_info.write(str(const_prefs))
 
-
+def gen_equipment_tables(etypes_path = etypes_path):
+    abs_root_path = r'D:\FinalFactory\data\equipment'
+    etypes_data = pd.read_csv(r'D:\FinalFactory\data\equipment\etypes.csv')
+    etypes = list(etypes_data["etype"])
+    esubtypes = list(etypes_data["esubtype"])
+    for i in range(len(etypes)):
+        path = abs_root_path +"\_"+ etypes[i] +"\_"+ esubtypes[i]
+        os.makedirs(path)
+        for param in ["common", "danger", "events", "other", "models"]:
+            path = abs_root_path +"\_"+ etypes[i] +r"\_"+ esubtypes[i] +"\_"+ param
+            os.makedirs(path)
 
