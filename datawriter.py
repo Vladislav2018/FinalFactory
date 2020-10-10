@@ -3,6 +3,7 @@ from typing import *
 import os
 import warnings
 import numpy as np
+import itertools as it
 
 DAYS_IN_MONTH: Tuple[int, ...] = (31, 28, 31, 30, 31, 30, 31, 31, 30, 30, 31, 30, 31)
 func_prefixes: Tuple[str, ...] = ('calc_', 'gen', 'write')
@@ -177,3 +178,18 @@ def gen_equipment_tables(etypes_path = etypes_path):
             path = abs_root_path +"\_"+ etypes[i] +r"\_"+ esubtypes[i] +"\_"+ param
             os.makedirs(path)
 
+def check_isntance_name(instance: str, path: str):
+    all_instances = os.listdir(path)
+    for elem in all_instances:
+        if instance not in elem:
+            continue
+        else:
+            return len(all_instances)
+    return 0
+def gen_next_name_table(instance: str, path: str):
+    number = it.count(1)
+    check = check_isntance_name(instance,path)
+    if check > 0:
+        number = it.count(check)
+    number = number.__next__()
+    return path+instance+"_"+str(number)+CSV_FORMAT

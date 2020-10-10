@@ -8,10 +8,16 @@ import candidates
 import datawriter as dw
 from usersfunc import *
 path_candidates = "data/candidates/candidates.csv"
+from data import products_raw_data as PWD
 
 if __name__ == '__main__':
-    gen_products()
-    """
+    i = 0
+    while i < 2:
+        gen_products(PWD.PARAMS_RANGES[i], PWD.PARAMS_COST_WEIGHTS[i], PWD.COST_MULTIPLIERS[i], PWD.STOCHASTIC_WEIGHTS[i])
+        i+=1
+
+
+"""
     candidates_to_write = []
     for i in range(50):
         city_number = np.random.randint(0,49)
