@@ -29,7 +29,7 @@ def gen_products(params, weights, cost_multiplier, stochastic_weight):
             cost += cost_multiplier*weight + np.random.random()*stochastic_weight
             cost = round(cost,2)
             values.append(param)
-            ids.append(uuid.uuid1())
+        ids.append(uuid.uuid1().__str__())
         speed = round(abs(m.tan(cost))*10)+np.random.choice(a=[100,200])
         creating_speed.append(speed)
         list_values.append(values)
@@ -43,10 +43,12 @@ def gen_products(params, weights, cost_multiplier, stochastic_weight):
     arr_values = np.append(arr_values,[costs], axis=0)
     arr_values = np.append(arr_values, [prices], axis=0)
     arr_values = np.append(arr_values, [creating_speed], axis=0)
+    arr_values = np.append(arr_values, [ids], axis=0)
     data = {}
     list_keys.append("costs")
     list_keys.append("prices")
     list_keys.append("creating_speed_in_secs")
+    list_keys.append("uuid")
     i = 0
     for d in list_keys:
         data.update({d: list(arr_values[i])})
